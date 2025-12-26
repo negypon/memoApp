@@ -1,6 +1,6 @@
 {
-  "name": "思考メモ",
-  "short_name": "思考メモ",
+  "name": "メモ帳",
+  "short_name": "メモ帳",
   "description": "思考を邪魔しない、シンプルなメモアプリ",
   "start_url": "./index.html",
   "display": "standalone",
