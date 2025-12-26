@@ -40,7 +40,7 @@
         <div class="header">
             <button id="btn-log-back" class="btn-icon">←</button>
             <h1>完了ログ</h1>
-            <div class="btn-icon"></div> <!-- スペーサー -->
+            <button id="btn-export" class="btn-icon" title="エクスポート">📤</button>
         </div>
         <div id="log-list" class="log-list"></div>
     </div>
@@ -55,6 +55,26 @@
             <div id="log-detail-text" class="log-detail-text"></div>
             <div id="log-detail-date" class="log-detail-date"></div>
             <button id="btn-restore" class="btn-primary">復帰</button>
+        </div>
+    </div>
+
+    <!-- エクスポートモーダル -->
+    <div id="export-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>エクスポート</h2>
+                <button id="btn-export-close" class="btn-close">×</button>
+            </div>
+            <div class="export-info">
+                完了ログを生成AIに渡しやすい形式でエクスポートします
+            </div>
+            <div class="export-options">
+                <button id="btn-export-text" class="btn-secondary">テキスト形式でコピー</button>
+                <button id="btn-export-json" class="btn-secondary">JSON形式でコピー</button>
+                <button id="btn-download-text" class="btn-secondary">テキストファイルをダウンロード</button>
+                <button id="btn-download-json" class="btn-secondary">JSONファイルをダウンロード</button>
+            </div>
+            <div id="export-preview" class="export-preview"></div>
         </div>
     </div>
 
