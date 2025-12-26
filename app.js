@@ -9,6 +9,7 @@ class App {
         this.initElements();
         this.bindEvents();
         this.render();
+        this.initExportFeature();
     }
 
     /**

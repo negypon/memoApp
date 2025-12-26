@@ -421,3 +421,39 @@ body {
         overscroll-behavior: contain;
     }
 }
+
+/* エクスポート関連 */
+.export-info {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.export-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.btn-secondary {
+    width: 100%;
+    padding: 12px;
+    background-color: #fff;
+    color: #007AFF;
+    border: 2px solid #007AFF;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.btn-secondary:active {
+    background-color: #f0f0f0;
+}
+
+.export-preview {
+    margin-top: 16px;
+}
