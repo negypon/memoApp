@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="思考メモ">
+    <meta name="theme-color" content="#007AFF">
+    <title>思考メモ</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+    <!-- メモ帳一覧画面 -->
+    <div id="list-screen" class="screen active">
+        <div class="header">
+            <h1>メモ帳</h1>
+            <button id="btn-add" class="btn-icon">+</button>
+        </div>
+        <div id="notebook-list" class="notebook-list"></div>
+    </div>
+
+    <!-- 編集画面 -->
+    <div id="edit-screen" class="screen">
+        <div class="header">
+            <button id="btn-back" class="btn-icon">←</button>
+            <span id="edit-title" class="edit-title"></span>
+            <button id="btn-complete" class="btn-icon">✓</button>
+        </div>
+        <div class="edit-container">
+            <div id="gutter" class="gutter"></div>
+            <textarea id="editor" class="editor" placeholder="ここにメモを入力..."></textarea>
+        </div>
+    </div>
+
+    <!-- 完了ログ画面 -->
+    <div id="log-screen" class="screen">
+        <div class="header">
+            <button id="btn-log-back" class="btn-icon">←</button>
+            <h1>完了ログ</h1>
+            <div class="btn-icon"></div> <!-- スペーサー -->
+        </div>
+        <div id="log-list" class="log-list"></div>
+    </div>
+
+    <!-- ログ詳細モーダル -->
+    <div id="log-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>完了内容</h2>
+                <button id="btn-modal-close" class="btn-close">×</button>
+            </div>
+            <div id="log-detail-text" class="log-detail-text"></div>
+            <div id="log-detail-date" class="log-detail-date"></div>
+            <button id="btn-restore" class="btn-primary">復帰</button>
+        </div>
+    </div>
+
+    <!-- ナビゲーションバー -->
+    <div class="navbar">
+        <button id="nav-list" class="nav-item active">
+            <span class="nav-icon">📝</span>
+            <span class="nav-label">メモ帳</span>
+        </button>
+        <button id="nav-log" class="nav-item">
+            <span class="nav-icon">✓</span>
+            <span class="nav-label">完了ログ</span>
+        </button>
+    </div>
+
+    <script src="storage.js"></script>
+    <script src="block.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Service Worker 登録
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered:', registration);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

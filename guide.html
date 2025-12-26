@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>思考メモ - 使い方</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #007AFF;
+            border-bottom: 2px solid #007AFF;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #333;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #666;
+            margin-top: 20px;
+        }
+        code {
+            background-color: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .feature {
+            background-color: #fff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .symbol {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #007AFF;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 20px 0;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>思考メモ - 使い方ガイド</h1>
+    
+    <a href="index.html" class="btn">アプリを開く →</a>
+    
+    <h2>📱 アプリの特徴</h2>
+    
+    <div class="feature">
+        <strong>💾 完全ローカル完結</strong><br>
+        サーバー不要、ネット接続不要で動作します。データはブラウザのlocalStorageに保存されます。
+    </div>
+    
+    <div class="feature">
+        <strong>✏️ 自由なメモ</strong><br>
+        普段は普通のメモ帳。必要な時だけタスク化できます。
+    </div>
+    
+    <div class="feature">
+        <strong>📚 複数のメモ帳</strong><br>
+        用途別にメモ帳を分けて管理できます。
+    </div>
+    
+    <div class="feature">
+        <strong>📱 PWA対応</strong><br>
+        ホーム画面に追加してアプリとして使用できます。
+    </div>
+    
+    <h2>🚀 基本的な使い方</h2>
+    
+    <h3>1. メモ帳を作成</h3>
+    <p>右上の「+」ボタンをタップして新規作成。すぐに編集画面に移動します。</p>
+    
+    <h3>2. メモを書く</h3>
+    <p>通常のメモ帳として自由に入力できます。<strong>1行目がタイトル代わり</strong>になります。</p>
+    
+    <h3>3. ブロックに状態を付与</h3>
+    <p>左側の<strong>ガター</strong>（細い列）をタップすると、ブロックの状態を切り替えられます：</p>
+    <ul>
+        <li><span class="symbol">（なし）</span> 未指定 - まだ何も決めていない</li>
+        <li><span class="symbol">▶</span> 通常 - タスク候補</li>
+        <li><span class="symbol">✓</span> 完了 - 完了したタスク</li>
+    </ul>
+    <p>状態は <strong>未指定 → 通常 → 完了 → 未指定</strong> の順に循環します。</p>
+    
+    <h3>4. 完了処理</h3>
+    <p>右上の「✓」ボタンをタップすると：</p>
+    <ul>
+        <li>✓マークのブロックだけが<strong>完了ログ</strong>に移動</li>
+        <li>メモ本文からは削除される</li>
+        <li>▶マークのブロックはそのまま残る</li>
+    </ul>
+    
+    <h2>📋 応用的な使い方</h2>
+    
+    <h3>管理対象外の行</h3>
+    <p><code>--</code> で始まる行は管理対象外として扱われます：</p>
+    <pre>-- ここから保留
+買い物メモ
+牛乳
+卵</pre>
+    <p>ガターに表示されず、完了ログにも移動しません。区切りやメモとして便利です。</p>
+    
+    <h3>カテゴリ機能</h3>
+    <p>ブロック先頭行に <code>カテゴリ名 タスク名</code> の形式で記述すると、完了ログに整形されて保存されます：</p>
+    <pre>ea ブレイク型_XXXの改善</pre>
+    <p>→ 完了ログ: <code>ea - ブレイク型_XXXの改善</code></p>
+    
+    <h3>メモ帳の並び替え</h3>
+    <p>メモ帳を<strong>500ms長押し</strong>すると、ドラッグして並び替えできます。</p>
+    
+    <h3>メモ帳の削除</h3>
+    <p>メモ帳を<strong>左にスワイプ</strong>すると、削除ボタンが表示されます。</p>
+    
+    <h2>📊 完了ログ</h2>
+    <p>下部ナビの「✓ 完了ログ」タブで確認できます：</p>
+    <ul>
+        <li>全メモ帳共通で表示</li>
+        <li>新しい順に並ぶ</li>
+        <li>タップで詳細表示</li>
+        <li>「復帰」ボタンで元のメモ帳の末尾に戻せる</li>
+    </ul>
+    
+    <h2>📲 ホーム画面に追加（推奨）</h2>
+    
+    <h3>iPhone Safari</h3>
+    <ol>
+        <li>Safariで <code>index.html</code> を開く</li>
+        <li>画面下部の共有ボタン（□↑）をタップ</li>
+        <li>「ホーム画面に追加」を選択</li>
+        <li>「追加」をタップ</li>
+    </ol>
+    
+    <h3>Android Chrome</h3>
+    <ol>
+        <li>Chromeで <code>index.html</code> を開く</li>
+        <li>メニュー（⋮）から「ホーム画面に追加」を選択</li>
+        <li>「追加」をタップ</li>
+    </ol>
+    
+    <h2>💾 データのバックアップ</h2>
+    <p>データはブラウザのlocalStorageに保存されています。</p>
+    <p><strong>注意:</strong> ブラウザのデータを削除するとメモも消えます。</p>
+    
+    <h3>バックアップ方法（開発者向け）</h3>
+    <ol>
+        <li>ブラウザの開発者ツールを開く（F12）</li>
+        <li>Console タブを開く</li>
+        <li>以下を実行：
+            <pre>console.log(localStorage.getItem('thoughtMemo'));</pre>
+        </li>
+        <li>表示されたJSONをコピーして保存</li>
+    </ol>
+    
+    <h3>復元方法</h3>
+    <ol>
+        <li>開発者ツールのConsoleで以下を実行：
+            <pre>localStorage.setItem('thoughtMemo', '保存したJSON');</pre>
+        </li>
+        <li>ページをリロード</li>
+    </ol>
+    
+    <h2>🤔 よくある質問</h2>
+    
+    <h3>Q: メモが消えた！</h3>
+    <p>A: ブラウザのデータ削除、シークレットモード、別のブラウザを使用していないか確認してください。</p>
+    
+    <h3>Q: データはどこに保存される？</h3>
+    <p>A: ブラウザのlocalStorageに保存されます。サーバーには一切送信されません。</p>
+    
+    <h3>Q: 他のデバイスと同期できる？</h3>
+    <p>A: 現バージョンでは非対応です。各デバイスでローカルに保存されます。</p>
+    
+    <h3>Q: 削除したメモは復元できる？</h3>
+    <p>A: メモ帳自体の削除は復元できません。完了ログからの削除は「復帰」で戻せます。</p>
+    
+    <h2>📝 設計思想</h2>
+    <p>このアプリは「思考を邪魔しないメモ帳」を目指しています：</p>
+    <ul>
+        <li>普段は自由にメモを書く</li>
+        <li>必要な時だけタスク化する</li>
+        <li>完了したことだけがログとして残る</li>
+        <li>タスク管理を強制しない</li>
+    </ul>
+    
+    <a href="index.html" class="btn">アプリを開く →</a>
+    
+    <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ccc; text-align: center; color: #999;">
+        <p>思考メモ - v1.0</p>
+        <p>MIT License</p>
+    </footer>
+</body>
+</html>
