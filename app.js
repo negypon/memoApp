@@ -675,7 +675,7 @@ App.prototype.initExportFeature = function() {
         const text = generateText(logs);
         try {
             await navigator.clipboard.writeText(text);
-            alert('テキスト形式でクリップボードにコピーしました！\n生成AIに貼り付けて分析できます。');
+            alert('テキスト形式でクリップボードにコピーしました！');
             exportModal.classList.remove('active');
         } catch (error) {
             alert('コピーに失敗しました。ブラウザの設定を確認してください。');
@@ -687,7 +687,7 @@ App.prototype.initExportFeature = function() {
         const json = generateJSON(logs);
         try {
             await navigator.clipboard.writeText(json);
-            alert('JSON形式でクリップボードにコピーしました！\n生成AIに貼り付けて分析できます。');
+            alert('JSON形式でクリップボードにコピーしました！');
             exportModal.classList.remove('active');
         } catch (error) {
             alert('コピーに失敗しました。ブラウザの設定を確認してください。');
