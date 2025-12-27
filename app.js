@@ -332,6 +332,13 @@ class App {
         item.addEventListener('touchstart', handleTouchStart);
         item.addEventListener('touchmove', handleTouchMove);
         item.addEventListener('touchend', handleTouchEnd);
+        
+        // マウスクリック対応（Windows/デスクトップ用）
+        item.addEventListener('click', (e) => {
+            const id = item.dataset.id;
+            this.showEditScreen(id);
+        });
+        
     }
 
     /**
