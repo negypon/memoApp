@@ -46,6 +46,50 @@
         <div id="log-list" class="log-list"></div>
     </div>
 
+    <!-- 設定画面 -->
+    <div id="settings-screen" class="screen">
+        <div class="header">
+            <button id="btn-settings-back" class="btn-icon">←</button>
+            <h1>設定</h1>
+            <div style="width: 40px;"></div>
+        </div>
+        <div class="settings-container">
+            <div class="settings-section">
+                <h3>データ管理</h3>
+                <p class="settings-description">
+                    すべてのメモ帳と完了ログをエクスポート・インポートできます。<br>
+                    端末間でデータを移行する際に使用してください。
+                </p>
+                <button id="btn-export-all" class="btn-setting">
+                    📦 すべてのデータをエクスポート
+                </button>
+                <button id="btn-import-all" class="btn-setting">
+                    📥 データをインポート
+                </button>
+                <input type="file" id="file-import" accept=".json" style="display: none;">
+            </div>
+            
+            <div class="settings-section danger">
+                <h3>危険な操作</h3>
+                <p class="settings-description">
+                    すべてのメモ帳と完了ログを削除します。<br>
+                    この操作は取り消せません。
+                </p>
+                <button id="btn-delete-all" class="btn-setting danger">
+                    🗑️ すべてのデータを削除
+                </button>
+            </div>
+            
+            <div class="settings-section">
+                <h3>アプリ情報</h3>
+                <p class="settings-info">
+                    バージョン: 1.0.0<br>
+                    データはあなたの端末にのみ保存されます
+                </p>
+            </div>
+        </div>
+    </div>
+
     <!-- ログ詳細モーダル -->
     <div id="log-modal" class="modal">
         <div class="modal-content">
@@ -88,6 +132,10 @@
         <button id="nav-log" class="nav-item">
             <span class="nav-icon">✓</span>
             <span class="nav-label">完了ログ</span>
+        </button>
+        <button id="nav-settings" class="nav-item">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-label">設定</span>
         </button>
     </div>
 

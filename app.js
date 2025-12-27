@@ -39,6 +39,14 @@ class App {
         this.btnLogBack = document.getElementById('btn-log-back');
         this.logList = document.getElementById('log-list');
         
+        // 設定画面
+        this.settingsScreen = document.getElementById('settings-screen');
+        this.btnSettingsBack = document.getElementById('btn-settings-back');
+        this.btnExportAll = document.getElementById('btn-export-all');
+        this.btnImportAll = document.getElementById('btn-import-all');
+        this.btnDeleteAll = document.getElementById('btn-delete-all');
+        this.fileImport = document.getElementById('file-import');
+        
         // モーダル
         this.logModal = document.getElementById('log-modal');
         this.btnModalClose = document.getElementById('btn-modal-close');
@@ -49,6 +57,7 @@ class App {
         // ナビゲーション
         this.navList = document.getElementById('nav-list');
         this.navLog = document.getElementById('nav-log');
+        this.navSettings = document.getElementById('nav-settings');
     }
 
     /**
@@ -67,6 +76,13 @@ class App {
         // 完了ログ
         this.btnLogBack.addEventListener('click', () => this.showListScreen());
         
+        // 設定画面
+        this.btnSettingsBack.addEventListener('click', () => this.showListScreen());
+        this.btnExportAll.addEventListener('click', () => this.exportAllData());
+        this.btnImportAll.addEventListener('click', () => this.fileImport.click());
+        this.btnDeleteAll.addEventListener('click', () => this.deleteAllData());
+        this.fileImport.addEventListener('change', (e) => this.importAllData(e));
+        
         // モーダル
         this.btnModalClose.addEventListener('click', () => this.closeModal());
         this.btnRestore.addEventListener('click', () => this.restoreLog());
@@ -79,28 +95,31 @@ class App {
         // ナビゲーション
         this.navList.addEventListener('click', () => this.showListScreen());
         this.navLog.addEventListener('click', () => this.showLogScreen());
+        this.navSettings.addEventListener('click', () => this.showSettingsScreen());
     }
 
     /**
      * 画面遷移
      */
-    showScreen(screen) {
-        [this.listScreen, this.editScreen, this.logScreen].forEach(s => {
-            s.classList.remove('active');
-        });
-        screen.classList.add('active');
-        
-        // ナビゲーション更新
-        [this.navList, this.navLog].forEach(nav => {
-            nav.classList.remove('active');
-        });
-        
-        if (screen === this.listScreen) {
-            this.navList.classList.add('active');
-        } else if (screen === this.logScreen) {
-            this.navLog.classList.add('active');
-        }
-    }
+     showScreen(screen) {
+         [this.listScreen, this.editScreen, this.logScreen, this.settingsScreen].forEach(s => {
+             s.classList.remove('active');
+         });
+         screen.classList.add('active');
+         
+         // ナビゲーション更新
+         [this.navList, this.navLog, this.navSettings].forEach(nav => {
+             nav.classList.remove('active');
+         });
+         
+         if (screen === this.listScreen) {
+             this.navList.classList.add('active');
+         } else if (screen === this.logScreen) {
+             this.navLog.classList.add('active');
+         } else if (screen === this.settingsScreen) {
+             this.navSettings.classList.add('active');
+         }
+     }
 
     showListScreen() {
         this.showScreen(this.listScreen);
@@ -116,6 +135,10 @@ class App {
     showLogScreen() {
         this.showScreen(this.logScreen);
         this.renderLogList();
+    }
+
+    showSettingsScreen() {
+        this.showScreen(this.settingsScreen);
     }
 
     /**
@@ -706,6 +729,118 @@ class App {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+    
+    /**
+     * すべてのデータをエクスポート
+     */
+    exportAllData() {
+        const data = storage.load();
+        const exportData = {
+            version: data.version,
+            exported_at: new Date().toISOString(),
+            notebooks: data.notebooks,
+            logs: data.logs
+        };
+        
+        const json = JSON.stringify(exportData, null, 2);
+        const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `memo-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        alert('データをエクスポートしました！');
+    }
+
+    /**
+     * データをインポート
+     */
+    importAllData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const importData = JSON.parse(e.target.result);
+                
+                // バージョンチェック
+                if (!importData.version || !importData.notebooks || !importData.logs) {
+                    throw new Error('Invalid data format');
+                }
+                
+                // 確認
+                const notebookCount = importData.notebooks.length;
+                const logCount = importData.logs.length;
+                const message = `インポートすると現在のデータは上書きされます。
+                    
+メモ帳: ${notebookCount}件
+完了ログ: ${logCount}件
+
+本当にインポートしますか？`;
+                
+                if (!confirm(message)) {
+                    this.fileImport.value = '';
+                    return;
+                }
+                
+                // データを保存
+                const data = {
+                    version: importData.version,
+                    notebooks: importData.notebooks,
+                    logs: importData.logs
+                };
+                
+                storage.save(data);
+                
+                alert('データをインポートしました！');
+                
+                // 画面を更新
+                this.showListScreen();
+                
+                // ファイル選択をリセット
+                this.fileImport.value = '';
+                
+            } catch (error) {
+                console.error('Import error:', error);
+                alert('データのインポートに失敗しました。\nファイルが正しいか確認してください。');
+                this.fileImport.value = '';
+            }
+        };
+        
+        reader.readAsText(file);
+    }
+
+    /**
+     * すべてのデータを削除
+     */
+    deleteAllData() {
+        const message = `すべてのメモ帳と完了ログを削除します。
+        
+この操作は取り消せません。
+本当に削除しますか？`;
+        
+        if (!confirm(message)) {
+            return;
+        }
+        
+        // 2回目の確認
+        if (!confirm('本当によろしいですか？\nすべてのデータが失われます。')) {
+            return;
+        }
+        
+        // localStorageをクリア
+        localStorage.clear();
+        
+        alert('すべてのデータを削除しました。');
+        
+        // ページをリロード
+        location.reload();
     }
 }
 

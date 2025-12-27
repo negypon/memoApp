@@ -555,3 +555,76 @@ body {
     opacity: 0.8;
 }
 
+/* 設定画面 */
+.settings-container {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px;
+}
+
+.settings-section {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.settings-section.danger {
+    border: 2px solid #ff3b30;
+}
+
+.settings-section h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #333;
+}
+
+.settings-description {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.settings-info {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.8;
+}
+
+.btn-setting {
+    width: 100%;
+    padding: 14px;
+    background-color: #007AFF;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.btn-setting:last-child {
+    margin-bottom: 0;
+}
+
+.btn-setting:active {
+    opacity: 0.8;
+}
+
+.btn-setting.danger {
+    background-color: #ff3b30;
+}
+
+.btn-setting.danger:hover {
+    background-color: #ff1f13;
+}
