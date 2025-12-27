@@ -4,19 +4,20 @@
  */
 class BlockManager {
     constructor() {
-        // 不可視トークンのマーカー
+        // 不可視トークンのマーカー（短縮版）
         this.TOKEN_START = '\u200B'; // ゼロ幅スペース
         this.TOKEN_END = '\u200B';
         
-        // ブロック状態
-        this.STATE_NONE = 'none';        // 未指定
-        this.STATE_NORMAL = 'normal';    // 通常（▶）
-        this.STATE_COMPLETE = 'complete'; // 完了（✓）
-        this.STATE_EXCLUDED = 'excluded'; // 管理対象外（--始まり）
+        // ブロック状態（短縮）
+        this.STATE_NONE = 'n';        // 未指定
+        this.STATE_NORMAL = 'r';      // 通常（▶）regular
+        this.STATE_COMPLETE = 'c';    // 完了（✓）complete
+        this.STATE_EXCLUDED = 'x';    // 管理対象外（--始まり）excluded
     }
 
     /**
      * テキストを解析してブロック情報を抽出
+     * 空行でブロックを分割
      */
     parseBlocks(text) {
         const lines = text.split('\n');
@@ -24,11 +25,23 @@ class BlockManager {
         let currentBlock = null;
 
         lines.forEach((line, index) => {
-            // ブロックマーカーを検出
+            const isEmpty = line.trim() === '';
             const marker = this.extractMarker(line);
             
-            if (marker || index === 0) {
-                // 新しいブロック開始
+            // 空行が出たら現在のブロックを終了
+            if (isEmpty && currentBlock) {
+                blocks.push(currentBlock);
+                currentBlock = null;
+                return;
+            }
+            
+            // 空行はスキップ
+            if (isEmpty) {
+                return;
+            }
+            
+            // マーカーがあるか、最初の行なら新しいブロック開始
+            if (marker || currentBlock === null) {
                 if (currentBlock) {
                     blocks.push(currentBlock);
                 }
@@ -81,12 +94,12 @@ class BlockManager {
     }
 
     /**
-     * 行にマーカーを埋め込む
+     * 行にマーカーを埋め込む（短縮版）
      */
     embedMarker(line, id, state) {
         // 既存のマーカーを削除
         const cleaned = this.removeMarker(line);
-        // 新しいマーカーを行末に追加
+        // 新しいマーカーを行末に追加（短縮形式: [id:s]）
         return `${cleaned}${this.TOKEN_START}[${id}:${state}]${this.TOKEN_END}`;
     }
 
@@ -123,9 +136,9 @@ class BlockManager {
         } else {
             id = marker.id;
             // 状態を循環
-            if (marker.state === this.STATE_NORMAL) {
+            if (marker.state === this.STATE_NORMAL || marker.state === 'normal') {
                 newState = this.STATE_COMPLETE;
-            } else if (marker.state === this.STATE_COMPLETE) {
+            } else if (marker.state === this.STATE_COMPLETE || marker.state === 'complete') {
                 // 完了 → 未指定（マーカー削除）
                 lines[lineNumber] = this.removeMarker(line);
                 return lines.join('\n');
@@ -146,7 +159,8 @@ class BlockManager {
         const completed = [];
 
         blocks.forEach(block => {
-            if (block.state === this.STATE_COMPLETE && !block.isExcluded) {
+            const isComplete = block.state === this.STATE_COMPLETE || block.state === 'complete';
+            if (isComplete && !block.isExcluded) {
                 // マーカーを削除したテキストを取得
                 const cleanLines = block.lines.map(line => this.removeMarker(line));
                 const blockText = cleanLines.join('\n');
@@ -204,7 +218,8 @@ class BlockManager {
 
         let currentIndex = 0;
         blocks.forEach(block => {
-            if (block.state === this.STATE_COMPLETE && !block.isExcluded) {
+            const isComplete = block.state === this.STATE_COMPLETE || block.state === 'complete';
+            if (isComplete && !block.isExcluded) {
                 // このブロックをスキップ
                 currentIndex = block.endLine + 1;
             } else {
@@ -222,10 +237,10 @@ class BlockManager {
     }
 
     /**
-     * ブロックIDを生成
+     * ブロックIDを生成（短縮版）
      */
     generateBlockId() {
-        return 'blk-' + Math.random().toString(36).substr(2, 9);
+        return Math.random().toString(36).substr(2, 6); // 6文字に短縮
     }
 
     /**
@@ -236,14 +251,14 @@ class BlockManager {
             return '';
         }
         
-        switch (state) {
-            case this.STATE_NORMAL:
-                return '▶';
-            case this.STATE_COMPLETE:
-                return '✓';
-            default:
-                return '';
+        // 旧形式との互換性のため両方チェック
+        if (state === this.STATE_NORMAL || state === 'normal') {
+            return '▶';
+        } else if (state === this.STATE_COMPLETE || state === 'complete') {
+            return '✓';
         }
+        
+        return '';
     }
 }
 
