@@ -107,17 +107,16 @@
     <div id="export-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>エクスポート</h2>
+                <h2>完了ログのエクスポート</h2>
                 <button id="btn-export-close" class="btn-close">×</button>
             </div>
             <div class="export-info">
-                完了ログをエクスポートします。
+                完了ログをテキストまたはCSV形式でエクスポートします。<br>
+                <small>※ データ移行は設定画面から行ってください</small>
             </div>
             <div class="export-options">
-                <button id="btn-export-text" class="btn-secondary">テキスト形式でコピー</button>
-                <button id="btn-export-json" class="btn-secondary">JSON形式でコピー</button>
-                <button id="btn-download-text" class="btn-secondary">テキストファイルをダウンロード</button>
-                <button id="btn-download-json" class="btn-secondary">JSONファイルをダウンロード</button>
+                <button id="btn-export-text" class="btn-secondary">📋 テキスト形式でコピー</button>
+                <button id="btn-download-csv" class="btn-secondary">📊 CSVファイルをダウンロード</button>
             </div>
             <div id="export-preview" class="export-preview"></div>
         </div>

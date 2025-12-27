@@ -850,9 +850,7 @@ App.prototype.initExportFeature = function() {
     const exportModal = document.getElementById('export-modal');
     const btnExportClose = document.getElementById('btn-export-close');
     const btnExportText = document.getElementById('btn-export-text');
-    const btnExportJson = document.getElementById('btn-export-json');
-    const btnDownloadText = document.getElementById('btn-download-text');
-    const btnDownloadJson = document.getElementById('btn-download-json');
+    const btnDownloadCSV = document.getElementById('btn-download-csv');
     const exportPreview = document.getElementById('export-preview');
     
     const self = this; // thisを保存
@@ -904,15 +902,36 @@ App.prototype.initExportFeature = function() {
         return text;
     };
     
-    const generateJSON = (logs) => {
-        return JSON.stringify({
-            exported_at: new Date().toISOString(),
-            total_count: logs.length,
-            logs: logs.map(log => ({
-                text: log.text,
-                completed_at: log.completed_at
-            }))
-        }, null, 2);
+    const generateCSV = (logs) => {
+        // BOM付きCSV（Excelで文字化けしないように）
+        let csv = '\uFEFF'; // BOM
+        csv += '完了日時,カテゴリ,内容\n';
+        
+        logs.forEach(log => {
+            const date = self.formatDateTime(log.completed_at);
+            
+            // カテゴリを抽出（ " - " で分割）
+            let category = '';
+            let content = log.text;
+            
+            if (log.text.includes(' - ')) {
+                const parts = log.text.split(' - ');
+                category = parts[0];
+                content = parts.slice(1).join(' - ');
+            }
+            
+            // CSVエスケープ（改行とカンマとダブルクォートを処理）
+            const escapeCSV = (str) => {
+                if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                    return '"' + str.replace(/"/g, '""') + '"';
+                }
+                return str;
+            };
+            
+            csv += `${escapeCSV(date)},${escapeCSV(category)},${escapeCSV(content)}\n`;
+        });
+        
+        return csv;
     };
     
     btnExportText.addEventListener('click', async () => {
@@ -927,41 +946,14 @@ App.prototype.initExportFeature = function() {
         }
     });
     
-    btnExportJson.addEventListener('click', async () => {
+    btnDownloadCSV.addEventListener('click', () => {
         const logs = storage.getAllLogs();
-        const json = generateJSON(logs);
-        try {
-            await navigator.clipboard.writeText(json);
-            alert('JSON形式でクリップボードにコピーしました！');
-            exportModal.classList.remove('active');
-        } catch (error) {
-            alert('コピーに失敗しました。ブラウザの設定を確認してください。');
-        }
-    });
-    
-    btnDownloadText.addEventListener('click', () => {
-        const logs = storage.getAllLogs();
-        const text = generateText(logs);
-        const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+        const csv = generateCSV(logs);
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `completed-logs-${new Date().toISOString().slice(0, 10)}.txt`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        exportModal.classList.remove('active');
-    });
-    
-    btnDownloadJson.addEventListener('click', () => {
-        const logs = storage.getAllLogs();
-        const json = generateJSON(logs);
-        const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `completed-logs-${new Date().toISOString().slice(0, 10)}.json`;
+        a.download = `completed-logs-${new Date().toISOString().slice(0, 10)}.csv`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
