@@ -41,9 +41,13 @@ class Storage {
 「--」で始まる行は管理対象外です
 区切りやメモとして使えます
 
+-- 削除方法
+【iPhone】左にスワイプで削除
+【PC】右側の×ボタンで削除
+完了ログも同じ方法で削除できます
+
 -- このメモについて
-このメモ帳は削除してOKです
-左にスワイプで削除できます`,
+このメモ帳は削除してOKです`,
             created_at: now,
             updated_at: now,
             order: 0
@@ -63,7 +67,10 @@ class Storage {
         try {
             const data = localStorage.getItem(this.STORAGE_KEY);
             if (!data) {
-                return this.getInitialData();
+                // 初回起動時は初期データを保存してから返す
+                const initialData = this.getInitialData();
+                this.save(initialData);
+                return initialData;
             }
             const parsed = JSON.parse(data);
             // バージョンチェック（将来のマイグレーション用）

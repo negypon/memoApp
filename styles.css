@@ -537,33 +537,21 @@ body {
 }
 
 /* モーダルアクション */
-.modal-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 16px;
-}
-
-.btn-danger {
-    flex: 1;
+.btn-primary {
+    width: 100%;
     padding: 12px;
-    background-color: #ff3b30;
-    color: white;
+    background-color: #007AFF;
+    color: #fff;
     border: none;
     border-radius: 8px;
     font-size: 16px;
     font-weight: 500;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
-.btn-danger:hover {
-    background-color: #ff1f13;
+.btn-primary:active {
+    opacity: 0.8;
 }
 
-.btn-danger:active {
-    transform: scale(0.98);
-}
-
-.btn-primary {
-    flex: 1;
-}

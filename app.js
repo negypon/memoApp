@@ -45,7 +45,6 @@ class App {
         this.logDetailText = document.getElementById('log-detail-text');
         this.logDetailDate = document.getElementById('log-detail-date');
         this.btnRestore = document.getElementById('btn-restore');
-        this.btnDeleteLog = document.getElementById('btn-delete-log');
         
         // ナビゲーション
         this.navList = document.getElementById('nav-list');
@@ -71,7 +70,6 @@ class App {
         // モーダル
         this.btnModalClose.addEventListener('click', () => this.closeModal());
         this.btnRestore.addEventListener('click', () => this.restoreLog());
-        this.btnDeleteLog.addEventListener('click', () => this.deleteLog());
         this.logModal.addEventListener('click', (e) => {
             if (e.target === this.logModal) {
                 this.closeModal();
@@ -652,21 +650,6 @@ class App {
         storage.updateNotebook(log.notebook_id, newContent);
         
         // モーダルを閉じてログ一覧を更新
-        this.closeModal();
-        this.renderLogList();
-    }
-
-    /**
-     * ログを削除
-     */
-    deleteLog() {
-        if (!this.currentLogId) return;
-        
-        if (!confirm('この完了ログを削除しますか？')) {
-            return;
-        }
-        
-        storage.deleteLog(this.currentLogId);
         this.closeModal();
         this.renderLogList();
     }
