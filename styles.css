@@ -457,3 +457,113 @@ body {
 .export-preview {
     margin-top: 16px;
 }
+
+/* 削除ボタン（メモ帳） */
+.notebook-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.notebook-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.delete-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #ff3b30;
+    color: white;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-left: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.delete-btn:hover {
+    background-color: #ff1f13;
+}
+
+.delete-btn:active {
+    transform: scale(0.95);
+}
+
+/* 削除ボタン（完了ログ） */
+.log-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.log-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.delete-btn-log {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #ff3b30;
+    color: white;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-left: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.delete-btn-log:hover {
+    background-color: #ff1f13;
+}
+
+.delete-btn-log:active {
+    transform: scale(0.95);
+}
+
+/* モーダルアクション */
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.btn-danger {
+    flex: 1;
+    padding: 12px;
+    background-color: #ff3b30;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.btn-danger:hover {
+    background-color: #ff1f13;
+}
+
+.btn-danger:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    flex: 1;
+}

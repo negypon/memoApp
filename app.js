@@ -6,6 +6,9 @@ class App {
         this.currentNotebookId = null;
         this.currentLogId = null;
         
+        // タッチデバイス判定
+        this.isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        
         this.initElements();
         this.bindEvents();
         this.render();
@@ -42,6 +45,7 @@ class App {
         this.logDetailText = document.getElementById('log-detail-text');
         this.logDetailDate = document.getElementById('log-detail-date');
         this.btnRestore = document.getElementById('btn-restore');
+        this.btnDeleteLog = document.getElementById('btn-delete-log');
         
         // ナビゲーション
         this.navList = document.getElementById('nav-list');
@@ -67,6 +71,7 @@ class App {
         // モーダル
         this.btnModalClose.addEventListener('click', () => this.closeModal());
         this.btnRestore.addEventListener('click', () => this.restoreLog());
+        this.btnDeleteLog.addEventListener('click', () => this.deleteLog());
         this.logModal.addEventListener('click', (e) => {
             if (e.target === this.logModal) {
                 this.closeModal();
@@ -139,10 +144,16 @@ class App {
             const isEmptyClass = firstLine ? '' : ' empty';
             const date = this.formatDate(notebook.updated_at);
             
+            // Windows用削除ボタン（タッチデバイスでは非表示）
+            const deleteBtn = this.isTouchDevice ? '' : '<button class="delete-btn">×</button>';
+            
             return `
                 <div class="notebook-item" data-id="${notebook.id}">
-                    <div class="notebook-title${isEmptyClass}">${this.escapeHtml(displayTitle)}</div>
-                    <div class="notebook-date">${date}</div>
+                    <div class="notebook-content">
+                        <div class="notebook-title${isEmptyClass}">${this.escapeHtml(displayTitle)}</div>
+                        <div class="notebook-date">${date}</div>
+                    </div>
+                    ${deleteBtn}
                 </div>
             `;
         }).join('');
@@ -339,6 +350,21 @@ class App {
             this.showEditScreen(id);
         });
         
+        // Windows用削除ボタン
+        if (!this.isTouchDevice) {
+            const deleteBtn = item.querySelector('.delete-btn');
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // 親要素のクリックを防止
+                    if (confirm('このメモ帳を削除しますか？')) {
+                        const id = item.dataset.id;
+                        storage.deleteNotebook(id);
+                        this.renderNotebookList();
+                    }
+                });
+            }
+        }
+        
     }
 
     /**
@@ -477,24 +503,103 @@ class App {
             return;
         }
         
+        // Windows用削除ボタン（タッチデバイスでは非表示）
+        const deleteBtn = this.isTouchDevice ? '' : '<button class="delete-btn-log">×</button>';
+        
         this.logList.innerHTML = logs.map(log => {
             const date = this.formatDateTime(log.completed_at);
             
             return `
                 <div class="log-item" data-id="${log.id}">
-                    <div class="log-text">${this.escapeHtml(log.text)}</div>
-                    <div class="log-date">${date}</div>
+                    <div class="log-content">
+                        <div class="log-text">${this.escapeHtml(log.text)}</div>
+                        <div class="log-date">${date}</div>
+                    </div>
+                    ${deleteBtn}
                 </div>
             `;
         }).join('');
         
-        // クリックイベント
+        // イベント追加
         this.logList.querySelectorAll('.log-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const id = item.dataset.id;
-                this.showLogDetail(id);
-            });
+            this.setupLogItemEvents(item);
         });
+    }
+
+    /**
+     * ログアイテムのイベント設定（スワイプ削除 + クリック）
+     */
+    setupLogItemEvents(item) {
+        let startX = 0;
+        let currentX = 0;
+        let isSwiping = false;
+    
+        const handleTouchStart = (e) => {
+            startX = e.touches[0].clientX;
+            currentX = startX;
+            isSwiping = false;
+        };
+    
+        const handleTouchMove = (e) => {
+            currentX = e.touches[0].clientX;
+            const diffX = startX - currentX;
+            
+            if (diffX > 30) {
+                isSwiping = true;
+                if (diffX > 80) {
+                    item.classList.add('deleting');
+                } else {
+                    item.classList.remove('deleting');
+                }
+            }
+        };
+    
+        const handleTouchEnd = (e) => {
+            if (isSwiping) {
+                const diffX = startX - currentX;
+                if (diffX > 80) {
+                    if (confirm('この完了ログを削除しますか？')) {
+                        const id = item.dataset.id;
+                        storage.deleteLog(id);
+                        this.renderLogList();
+                    } else {
+                        item.classList.remove('deleting');
+                    }
+                } else {
+                    item.classList.remove('deleting');
+                }
+                return;
+            }
+            
+            // 通常のタップ
+            const id = item.dataset.id;
+            this.showLogDetail(id);
+        };
+    
+        item.addEventListener('touchstart', handleTouchStart);
+        item.addEventListener('touchmove', handleTouchMove);
+        item.addEventListener('touchend', handleTouchEnd);
+        
+        // クリック（Windows用）
+        item.addEventListener('click', () => {
+            const id = item.dataset.id;
+            this.showLogDetail(id);
+        });
+        
+        // Windows用削除ボタン
+        if (!this.isTouchDevice) {
+            const deleteBtn = item.querySelector('.delete-btn-log');
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (confirm('この完了ログを削除しますか？')) {
+                        const id = item.dataset.id;
+                        storage.deleteLog(id);
+                        this.renderLogList();
+                    }
+                });
+            }
+        }
     }
 
     /**
@@ -547,6 +652,21 @@ class App {
         storage.updateNotebook(log.notebook_id, newContent);
         
         // モーダルを閉じてログ一覧を更新
+        this.closeModal();
+        this.renderLogList();
+    }
+
+    /**
+     * ログを削除
+     */
+    deleteLog() {
+        if (!this.currentLogId) return;
+        
+        if (!confirm('この完了ログを削除しますか？')) {
+            return;
+        }
+        
+        storage.deleteLog(this.currentLogId);
         this.closeModal();
         this.renderLogList();
     }
