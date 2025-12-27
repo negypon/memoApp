@@ -9,12 +9,49 @@ class Storage {
     }
 
     /**
-     * 初期データ構造
+     * 初期データ構造（デフォルトメモ帳付き）
      */
     getInitialData() {
+        const now = new Date().toISOString();
+        
+        // デフォルトの使い方メモ帳
+        const welcomeNotebook = {
+            id: this.generateId(),
+            content: `メモ帳へようこそ！
+
+-- 基本的な使い方
+メモを自由に書いてください
+タスクにしたい行の左側（ガター）をタップすると ▶ マークが付きます
+もう一度タップすると ✓ マーク（完了）になります
+右上の ✓ ボタンで完了タスクをログに移動できます
+
+-- カテゴリ機能（任意）
+カテゴリ タスクの内容
+→ 完了ログには「カテゴリ - タスクの内容」と記録されます
+
+-- ブロックの分割
+空行を入れると別のタスクとして分かれます
+
+タスク1の内容
+詳細説明
+
+タスク2の内容
+
+-- 管理対象外
+「--」で始まる行は管理対象外です
+区切りやメモとして使えます
+
+-- このメモについて
+このメモ帳は削除してOKです
+左にスワイプで削除できます`,
+            created_at: now,
+            updated_at: now,
+            order: 0
+        };
+        
         return {
             version: this.VERSION,
-            notebooks: [],
+            notebooks: [welcomeNotebook],
             logs: []
         };
     }
